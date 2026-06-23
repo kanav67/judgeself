@@ -2,6 +2,11 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const toBoolean = (value, defaultValue = false) => {
+  if (value === undefined || value === null || value === '') return defaultValue;
+  return String(value).toLowerCase() === 'true';
+};
+
 const env = {
   nodeEnv: process.env.NODE_ENV ?? 'development',
   port: Number(process.env.PORT ?? 3000),
@@ -14,10 +19,11 @@ const env = {
   s3AccessKeyId: process.env.S3_ACCESS_KEY_ID ?? 'problem-service',
   s3SecretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? 'problem-service-secret',
   s3Bucket: process.env.S3_BUCKET ?? 'problem-service-artifacts',
-  s3ForcePathStyle: (process.env.S3_FORCE_PATH_STYLE ?? 'true') === 'true',
+  s3ForcePathStyle: toBoolean(process.env.S3_FORCE_PATH_STYLE, true),
   polygonUsername: process.env.POLYGON_USERNAME ?? 'your_polygon_username',
   polygonPassword: process.env.POLYGON_PASSWORD ?? 'your_polygon_password',
   polygonTmpDir: process.env.POLYGON_TMPDIR ?? '/tmp/polygon/',
+  polygonAllowGenerateTests: toBoolean(process.env.POLYGON_ALLOW_GENERATE_TESTS, false),
 };
 
 module.exports = { env };

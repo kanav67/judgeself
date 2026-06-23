@@ -18,16 +18,16 @@ const extractProblemStatement = async (workDir) => {
 
   const validImages = [];
 
-  const imagesPath = path.join(workDir, 'images');
-  await fs.mkdir(imagesPath, { recursive: true });
   for (const imgSrc of images) {
     const imgPath = path.join(workDir, '/statements/.html/english', imgSrc);
     try {
-      const destPath = path.join(imagesPath, imgSrc);
-      await fs.copyFile(imgPath, destPath);
-      validImages.push(imgSrc);
+      await fs.access(imgPath);
+      validImages.push({
+        name: imgSrc,
+        imgSrc: imgPath,
+      });
     } catch (error) {
-      console.warn(`Image: ${imgPath} could not be added either it doesn't exist or copy failed. Skipping it.`, error);
+      console.warn(`Image: ${imgSrc} could not be added either it doesn't exist or copy failed. Skipping it.`, error);
     }
   }
 
