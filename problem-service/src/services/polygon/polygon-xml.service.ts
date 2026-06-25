@@ -64,7 +64,7 @@ function extractName(problemData: PolygonProblemData) {
 }
 
 function extractResources(problemData: PolygonProblemData) {
-  const skipFiles = ['files/problem.tex', 'files/statements.ftl', 'files/olyml.sty'];
+  const skipFiles = ['files/problem.tex', 'files/statements.ftl', 'files/olymp.sty'];
   return (problemData.problem.files.resources?.file || [])
     .filter((file) => !skipFiles.includes(file.path))
     .map((file) => ({

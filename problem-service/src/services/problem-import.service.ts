@@ -42,9 +42,9 @@ export const importProblem = async (problemUrl: string) => {
     await uploadToS3(problemZipPath, problemZipKey);
     
     for (const img of statementsData.images) {
-      await uploadToS3(img.imgSrc, `${problemId}/images/${img.name}`);
+      await uploadToS3(img.imgSrc, `images/${problemId}/${img.name}`);
     }
-    const imagesKeys = statementsData.images.map((img) => `${problemId}/images/${img.name}`);
+    const imagesKeys = statementsData.images.map((img) => `images/${problemId}/${img.name}`);
 
     const res = await createProblemRecord({
       id: problemId,
