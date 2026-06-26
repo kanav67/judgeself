@@ -1,4 +1,60 @@
 services:
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: shared-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: shared-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # execution-engine:
+  #   build:
+  #     context: .
+  #     dockerfile: execution-engine/Dockerfile
+  #   container_name: execution-engine
+  #   privileged: true
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     minio-init:
+  #       condition: service_completed_successfully
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   environment:
+  #     POSTGRES_DSN: postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+  #     RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+  #     RABBITMQ_QUEUE: submissions
+  #     REDIS_ADDR: redis:6379
+  #     REDIS_DB: "0"
+  #     WORKER_COUNT: "4"
+  #     HTTP_ADDR: :8080
+  #     CACHE_DIR: /var/lib/execution-engine/cache
+  #     BUNDLE_ROOT: /var/lib/execution-engine/bundles
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - execution_engine_cache:/var/lib/execution-engine
+
   postgres:
     image: postgres:16-alpine
     container_name: shared-postgres
@@ -50,3 +106,4 @@ services:
 volumes:
   shared_postgres_data:
   shared_minio_data:
+  execution_engine_cache:
